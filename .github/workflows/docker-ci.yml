@@ -1,0 +1,26 @@
+name: Docker CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Backend Image
+        run: |
+          cd backend
+          docker build -t backend-test .
+
+      - name: Run Backend Container
+        run: |
+          docker run -d -p 5000:5000 backend-test
+          sleep 5
+          curl http://localhost:5000
